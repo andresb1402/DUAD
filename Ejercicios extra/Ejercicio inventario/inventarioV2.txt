@@ -1,0 +1,6 @@
+Guitarras:12
+Baterias:4
+Pianos:2
+Bajos:7
+Microfonos:20
+Maracas:50

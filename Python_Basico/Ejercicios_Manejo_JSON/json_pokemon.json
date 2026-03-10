@@ -1,0 +1,197 @@
+[
+    {
+        "name": {
+            "english": "Charmander"
+        },
+        "level": 5,
+        "type": ["Fire"],
+        "base": {
+            "HP": 39,
+            "Attack": 52,
+            "Defense": 43,
+            "Sp. Attack": 60,
+            "Sp. Defense": 50,
+            "Speed": 65
+        }
+    },
+    {
+        "name": {
+            "english": "Squirtle"
+        },
+        "level": 5,
+        "type": ["Water"],
+        "base": {
+            "HP": 44,
+            "Attack": 48,
+            "Defense": 65,
+            "Sp. Attack": 50,
+            "Sp. Defense": 64,
+            "Speed": 43
+        }
+    },
+    {
+        "name": {
+            "english": "Bulbasaur"
+        },
+        "level": 5,
+        "type": ["Grass", "Poison"],
+        "base": {
+            "HP": 45,
+            "Attack": 49,
+            "Defense": 49,
+            "Sp. Attack": 65,
+            "Sp. Defense": 65,
+            "Speed": 45
+        }
+    },
+    {
+        "name": {
+            "english": "Gengar"
+        },
+        "level": 25,
+        "type": ["Ghost", "Poison"],
+        "base": {
+            "HP": 60,
+            "Attack": 65,
+            "Defense": 60,
+            "Sp. Attack": 130,
+            "Sp. Defense": 75,
+            "Speed": 110
+        }
+    },
+    {
+        "name": {
+            "english": "Lucario"
+        },
+        "level": 32,
+        "type": ["Fighting", "Steel"],
+        "base": {
+            "HP": 70,
+            "Attack": 110,
+            "Defense": 70,
+            "Sp. Attack": 115,
+            "Sp. Defense": 70,
+            "Speed": 90
+        }
+    },
+    {
+        "name": {
+            "english": "Gyarados"
+        },
+        "level": 20,
+        "type": ["Water", "Flying"],
+        "base": {
+            "HP": 95,
+            "Attack": 125,
+            "Defense": 79,
+            "Sp. Attack": 60,
+            "Sp. Defense": 100,
+            "Speed": 81
+        }
+    },
+    {
+        "name": {
+            "english": "Dragonite"
+        },
+        "level": 55,
+        "type": ["Dragon", "Flying"],
+        "base": {
+            "HP": 91,
+            "Attack": 134,
+            "Defense": 95,
+            "Sp. Attack": 100,
+            "Sp. Defense": 100,
+            "Speed": 80
+        }
+    },
+    {
+        "name": {
+            "english": "Eevee"
+        },
+        "level": 1,
+        "type": ["Normal"],
+        "base": {
+            "HP": 55,
+            "Attack": 55,
+            "Defense": 50,
+            "Sp. Attack": 45,
+            "Sp. Defense": 65,
+            "Speed": 55
+        }
+    },
+    {
+        "name": {
+            "english": "Alakazam"
+        },
+        "level": 36,
+        "type": ["Psychic"],
+        "base": {
+            "HP": 55,
+            "Attack": 50,
+            "Defense": 45,
+            "Sp. Attack": 135,
+            "Sp. Defense": 95,
+            "Speed": 120
+        }
+    },
+    {
+        "name": {
+            "english": "Lapras"
+        },
+        "level": 25,
+        "type": ["Water", "Ice"],
+        "base": {
+            "HP": 130,
+            "Attack": 85,
+            "Defense": 80,
+            "Sp. Attack": 85,
+            "Sp. Defense": 95,
+            "Speed": 60
+        }
+    },
+    {
+        "name": {
+            "english": "Onix"
+        },
+        "level": 15,
+        "type": ["Rock", "Ground"],
+        "base": {
+            "HP": 35,
+            "Attack": 45,
+            "Defense": 160,
+            "Sp. Attack": 30,
+            "Sp. Defense": 45,
+            "Speed": 70
+        }
+    },
+    {
+        "name": {
+            "english": "Gardevoir"
+        },
+        "level": 30,
+        "type": ["Psychic", "Fairy"],
+        "base": {
+            "HP": 68,
+            "Attack": 65,
+            "Defense": 65,
+            "Sp. Attack": 125,
+            "Sp. Defense": 115,
+            "Speed": 80
+        }
+    },
+    {
+        "name": {
+            "english": "Tyranitar"
+        },
+        "level": 55,
+        "type": ["Rock", "Dark"],
+        "base": {
+            "HP": 100,
+            "Attack": 134,
+            "Defense": 110,
+            "Sp. Attack": 95,
+            "Sp. Defense": 100,
+            "Speed": 61
+        }
+    }
+]
