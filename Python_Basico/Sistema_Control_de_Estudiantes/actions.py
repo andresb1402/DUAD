@@ -119,6 +119,7 @@ def display_students_information(students_list):
 
 
 def display_top_3_performers(students_list):
+    top_performers = []
     print('--Top 3 performers--\n')
     for row in students_list:
         average_dict = {'Name':'', 'Grade Level':'', 'Group':'', 'Average grade':''}
@@ -149,6 +150,7 @@ def display_grade_point_average(top_performers):
 
 
 def display_failed_grades(students_list):
+    low_performers = []
     print('--Failed grades--\n')
     subjects = ["Spanish grade", "English grade", "Social Studies grade", "Science grade"]
 
