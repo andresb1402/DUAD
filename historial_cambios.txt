@@ -1,0 +1,5 @@
+commit fdd8e7dbdccf16d06bcdea33af5c784678961e21
+-Uploaded the past exercices.
+
+commit d4d670d4328aca40666804bc68ba2190e1c67a6a
+-Initial commit
