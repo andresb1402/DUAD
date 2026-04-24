@@ -1,0 +1,39 @@
+## algoritmo para ver un video en Youtube
+
+##V1
+Inicio
+Encender dispositivo
+Abrir app Youtube
+Hacer la busqueda del video
+Seleccionar y reproducir
+Fin
+
+##V2
+Inicio
+Encender dispositivo
+	Si tiene PC:
+		Abra un navegador y vaya a Youtube.com
+	Sino, si tiene celular, o tiene tablet, o tiene smartTV:
+		Abra la app de Youtube
+	Sino:
+		Busque un dispositivo con acceso a internet
+Hacer la busqueda del video
+Seleccionar y reproducir
+Fin
+
+##V3
+Inicio
+Si el dispositivo está apagado
+	Encender dispositivo
+	Fin si
+Si tiene PC:
+	Abra un navegador y vaya a Youtube.com
+Sino, si tiene celular, o tiene tablet, o tiene smartTV:
+	Abra la app de Youtube
+Sino:
+	Busque un dispositivo con acceso a internet
+Mientras quiera ver más videos:
+	Hacer la busqueda del video
+	Seleccionar y reproducir
+	Fin mientras
+Fin

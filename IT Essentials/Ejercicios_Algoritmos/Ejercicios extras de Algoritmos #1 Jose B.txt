@@ -1,0 +1,47 @@
+## fiesta sorpresa para un amigo
+
+Inicio
+Coordinar discretamente la fecha con amigo
+Si amigo no puede esa fecha:
+	Buscar otra fecha
+	
+Crear una lista de invitados
+Buscar lugar para fiesta y confirmar anfitrión
+Por cada invitado en lista de invitados:
+	Preguntar si su casa está disponible para la fiesta
+		Si está disponible:
+			Hay anfitrión
+			fin si
+			
+Enviar invitaciones (con hora de llegada **30 minutos antes**) a invitados
+Invitar a amigo por aparte para una reunión casual con anfitrión
+Comprar comida, bebidas y confeti
+Mientras hayan invitados ausentes (después de la hora pactada):
+	Llamar para confirmar asistencia
+		Si confirman no poder llegar:
+			Remover de lista de invitados
+		Fin si
+	Fin mientras
+	
+Si los invitados ya llegaron, el amigo NO
+  Instruir a todos los invitados que **se escondan**
+Fin si
+
+Si amigo NO entra directo a la sala:
+	Anfitrión deberá guiar a amigo a la sala
+Fin si
+
+Gritar "Sorpresa!"
+Cantar cumpleaños
+Lanzar confeti
+Por cada invitado en lista de invitados:
+	Repartir un plato con comida y una cerveza
+Fin por
+	
+Hacer actividades y juegos de mesa
+Mientras queden invitados con energia:
+	seguir la fiesta
+Fin mientras
+
+Despedir a los invitados y ordenar la casa de anfitrión
+Fin

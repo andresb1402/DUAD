@@ -1,0 +1,8 @@
+Guitarras:15
+Baterias:6
+Pianos:7
+Bajos:10
+Microfonos:20
+Armonica:5
+Trompetas:13
+Mezcladora:2

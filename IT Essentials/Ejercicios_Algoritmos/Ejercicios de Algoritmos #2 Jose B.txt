@@ -1,0 +1,59 @@
+## algoritmo sobre mi rutina diaria
+
+##V1
+Inicio
+Tender mi cama
+Desayunar
+Bañarme
+Almorzar
+Tomar café
+Descansar
+Cenar
+Acostarme
+Fin
+
+##V2
+Inicio
+Despertar
+Tender mi cama
+Si toca hacer ejercicio:
+	Hacer ejercicio
+	Fin si
+Desayunar
+Bañarme
+Alimentar mi tortuga
+Almorzar
+Si tengo fotos por editar:
+	Editar fotos 
+	Fin si
+Tomar café
+Descansar
+Cenar
+Acostarme
+Fin
+
+##V3
+Inicio
+Despertar
+Tender mi cama
+Si toca hacer ejercicio:
+	Hacer ejercicio
+	Fin si
+Desayunar
+Bañarme
+Alimentar mi tortuga
+Almorzar
+Si tengo fotos por editar:
+	Editar fotos 
+	Fin si
+Tomar café
+Si la tarde está bonita:
+	Ver el atardecer
+Sino:
+	Descansar
+Cenar
+Acostarme
+Mientras no tenga sueño:
+	Ver redes sociales
+	Fin mientras
+Fin

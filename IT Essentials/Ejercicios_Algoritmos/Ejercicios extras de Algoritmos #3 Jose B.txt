@@ -1,0 +1,35 @@
+## Preparación para hobby favorito (enduro)
+
+Inicio
+Levantarme a las 6:00 am
+
+Si GoPro está descargada:
+	cargarla
+Fin si
+
+Desayunar fuerte
+Revisar la moto
+
+Si los neumaticos necesitan aire:
+	Inflar un poco
+Fin si
+
+Si la cadena está seca:
+	Lubricar
+Fin si
+
+Si el tanque de gasolina está vacío:
+	Llenar
+Fin si
+
+Ponerme uniforme y protecciones
+Alistar bolso con agua y herramientas
+Salir a rodar
+
+Mientras haya más de 25% del nivel de gasolina
+	Seguir rodando
+Fin Mientras
+
+Guardar moto
+Quitarme uniforme y protecciones
+Fin

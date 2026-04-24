@@ -1,0 +1,24 @@
+## Preparación para examen importante
+
+Inicio
+Hacer lista de temas de examen a mano
+Hacer un resumen a mano por cada tema con puntos clave
+Leer y entender el resumen 
+
+Por cada tema en temas:
+	Hacer al menos 3 preguntas con sus respuestas
+	Repasar las preguntas y respuestas
+	Si NO entiendo el tema:
+      Repasar las preguntas y respuestas del tema
+    Fin Si
+fin por 
+
+Mientras hayan dudas o NO me sienta listo:
+	Leer nuevamente el resumen
+	Repasar el set completo de preguntas y respuestas
+	Practicar con un examen de prueba
+    Si el resultado del examen de prueba es satisfactorio Y no hay dudas:
+      Fin Mientras
+    Fin Si
+  Fin Mientras
+Fin
