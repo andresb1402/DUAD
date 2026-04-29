@@ -9,7 +9,7 @@ def add_student():
         new_student = {'Name':'', 'Grade Level':'', 'Group':'', 'Spanish grade':'', 'English grade':'', 'Social Studies grade':'', 'Science grade':''} 
         name = input("Please enter the full name of the student (name + last name): ").strip()
         if name.isspace() or len(name) == 0 or name.isdigit():
-            print("Error: Name cannot be empty, a spaces or a number.")
+            print("Error: Name cannot be empty, a space or a number.")
             continue
         while True:
             try:
@@ -60,6 +60,7 @@ def student_exists(name, grade_level, group, students_list):
     return None
 
 def remove_student(students_list):
+    deleted_students = []
     while True:
         student = input("Please enter the name of the student you want to remove: ").strip()
         if student.isspace() or len(student) == 0 or student.isdigit():
@@ -77,11 +78,11 @@ def remove_student(students_list):
             found_student = None
             for s in students_list:
                 if student == s['Name'] and str(level) == str(s['Grade Level']) and group == s['Group']:
-                    print(f"{student} from {level}{group} was found.\n")
+                    print(f"\n{student} from {level}{group} was found.\n")
                     found_student = s
                     break
             if found_student:
-                choice = input(f"{student} will be removed, are you sure? (y/n): ").capitalize().strip()
+                choice = input(f"\n{student} will be removed, are you sure? (y/n): ").capitalize().strip()
                 if choice == 'Y':
                     students_list.remove(found_student)
                     deleted_students.append(found_student)
@@ -93,8 +94,8 @@ def remove_student(students_list):
                 else:
                     print("Invalid option. (y/n)")
             else:
-                print(f"Student '{student}' not found in {level}{group}.")
-                again = input("Do you want to try again? (y/n): ").capitalize().strip()
+                print(f"\nStudent '{student}' not found in {level}{group}.")
+                again = input("\nDo you want to try again? (y/n): ").capitalize().strip()
                 if again != 'Y':
                     break
 
