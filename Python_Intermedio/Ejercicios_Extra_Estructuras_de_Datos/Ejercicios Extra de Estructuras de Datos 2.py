@@ -20,11 +20,13 @@ class LinkedList:
 
 	def print_all(self):
 		current_node = self.head
+		structure_list = []
 
 		if self.head:
 			while current_node is not None:
-				print(current_node.data)
+				structure_list.append(current_node.data)
 				current_node = current_node.next
+			print(" -> ".join(structure_list))
 		else:
 			print('Empty list.')
 

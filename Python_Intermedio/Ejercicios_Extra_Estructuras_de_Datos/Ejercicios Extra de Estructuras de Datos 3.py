@@ -28,19 +28,25 @@ class DoublyLinkedList:
 
 	def print_forward(self):
 		current_node = self.head
+		structure_list = []
+
 		if self.head:
 			while current_node is not None:
-				print(current_node.data)
+				structure_list.append(current_node.data)
 				current_node = current_node.next
+			print(" -> ".join(structure_list))
 		else:
 			print('Empty list.')
 
 	def print_backward(self):
 		current_node = self.tail
+		structure_list = []
+
 		if self.tail:
 			while current_node is not None:
-				print(current_node.data)
+				structure_list.append(current_node.data)
 				current_node = current_node.prev
+			print(" -> ".join(structure_list))
 		else:
 			print('Empty list.')
 
