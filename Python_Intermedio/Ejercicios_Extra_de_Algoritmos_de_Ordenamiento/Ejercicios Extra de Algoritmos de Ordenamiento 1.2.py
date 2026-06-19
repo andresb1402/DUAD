@@ -52,6 +52,18 @@ class DoubleEndedQueue:
 			self.head = new_left_node
 
 
+	def push_right(self, data):
+		if self.head is None or self.tail is None:
+			new_left_node = Node(data)
+			self.head = new_left_node
+			self.tail = new_left_node
+		else:
+			new_right_node = Node(data)
+			new_right_node.prev = self.tail
+			self.tail.next = new_right_node
+			self.tail = new_right_node
+
+
 	def pop_left(self):
 		if self.head is None:
 			print('\nEmpty list.')
@@ -114,7 +126,7 @@ my_queue.push_right(5)
 print("--- Estructura inicial del Deque ---")
 my_queue.print_structure()
 
-# print(f"\nHacemos pop_left: {my_queue.pop_left()}")
+print(f"\nHacemos pop_left: {my_queue.pop_left()}")
 # print(f"Hacemos pop_right: {my_queue.pop_right()}")
 
 
