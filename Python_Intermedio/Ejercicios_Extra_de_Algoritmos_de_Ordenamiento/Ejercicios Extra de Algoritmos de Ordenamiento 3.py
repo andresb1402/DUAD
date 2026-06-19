@@ -7,36 +7,36 @@
 #         Si hay error, debe lanzar un mensaje apropiado
 
 
-def list_validation(list):
-	if list:
-		print(f'Original list: {list}')
+def list_validation(input_list):
+	if input_list:
+		print(f'Original list: {input_list}')
 		has_error = False
-		for element in list:
+		for element in input_list:
 			if type(element) not in (int, float):
 				has_error = True
 				print(f"Error: List contains non-numeric values: '{element}'")
 				break
 
 		if not has_error:
-			return sorting_bubble(list)
+			return sorting_bubble(input_list)
 				
 	else:
 		print("Empty list")
 
 
-def sorting_bubble(list):
-	for i in range (len(list)):
+def sorting_bubble(input_list):
+	for i in range (len(input_list)):
 		already_sorted = True
-		for index in range (0, len(list) - 1):
+		for index in range (0, len(input_list) - 1):
 
-			if list[index] > list[index + 1]:
-				list[index], list[index + 1] = list[index + 1], list[index]
+			if input_list[index] > input_list[index + 1]:
+				input_list[index], input_list[index + 1] = input_list[index + 1], input_list[index]
 				already_sorted = False
 
 		if already_sorted:
 			print('\nDone.')
 			break
-	print(f'Sorted list: {list}')
+	print(f'Sorted list: {input_list}')
 
 my_list1 = ['Ana', 2, 4, 5, 1]
 my_list2 = [3, 2, 1, 5, 'Jose']
