@@ -53,15 +53,6 @@ def test_upper_and_lower_cases_count():
     assert upper_cases == 3 and lower_cases == 16
 
 
-def test_upper_and_lower_cases_count():
-    upper_cases = 0
-    lower_cases = 0
-    input_sentence = "My name is Jose Barboza"
-    upper_cases, lower_cases = upper_and_lower_cases_count(input_sentence)
-
-    assert upper_cases == 3 and lower_cases == 16
-
-
 def test_upper_and_lower_cases_count_including_numbers():
     upper_cases = 0
     lower_cases = 0
