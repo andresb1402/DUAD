@@ -1,0 +1,98 @@
+[
+    {
+        "trans_type": "Income",
+        "title": "Moto",
+        "category": "General",
+        "amount": 13000.0,
+        "payment_method": "Cash",
+        "date": "20/07/2026"
+    },
+    {
+        "trans_type": "Income",
+        "title": "Aro Dani",
+        "category": "Rims",
+        "amount": 10000.0,
+        "payment_method": "Cash",
+        "date": "18/05/2026"
+    },
+    {
+        "trans_type": "Income",
+        "title": "Fotos Tita",
+        "category": "Photography",
+        "amount": 75000.0,
+        "payment_method": "SINPE",
+        "date": "16/07/2026"
+    },
+    {
+        "trans_type": "Expense",
+        "title": "Hamburguesa",
+        "category": "Food",
+        "amount": 5800.0,
+        "payment_method": "Credit Card",
+        "date": "12/07/2026"
+    },
+    {
+        "trans_type": "CC Payment",
+        "title": "Promerica",
+        "category": "CC Payment",
+        "amount": 150000.0,
+        "payment_method": "Transfer",
+        "date": "15/07/2026"
+    },
+    {
+        "trans_type": "CC Partial Payment",
+        "title": "Papas",
+        "category": "CC Partial Payment",
+        "amount": 1800.0,
+        "payment_method": "SINPE",
+        "date": "15/07/2026"
+    },
+    {
+        "trans_type": "Income",
+        "title": "Compu",
+        "category": "General",
+        "amount": 8000.0,
+        "payment_method": "SINPE",
+        "date": "10/02/2026"
+    },
+    {
+        "trans_type": "Expense",
+        "title": "Gas XR",
+        "category": "Gas",
+        "amount": 4800.0,
+        "payment_method": "Credit Card",
+        "date": "11/07/2026"
+    },
+    {
+        "trans_type": "Expense",
+        "title": "Gas Husky",
+        "category": "Gas",
+        "amount": 3896.0,
+        "payment_method": "Credit Card",
+        "date": "20/07/2026"
+    },
+    {
+        "trans_type": "Expense",
+        "title": "Celular",
+        "category": "Services",
+        "amount": 11000.0,
+        "payment_method": "Credit Card",
+        "date": "09/07/2026"
+    },
+    {
+        "trans_type": "Expense",
+        "title": "Aceite moto",
+        "category": "Others",
+        "amount": 26000.0,
+        "payment_method": "Credit Card",
+        "date": "06/07/2026"
+    },
+    {
+        "trans_type": "Expense",
+        "title": "Ahorro quincenal",
+        "category": "Savings",
+        "amount": 25000.0,
+        "payment_method": "Transfer",
+        "date": "11/07/2026"
+    }
+]
