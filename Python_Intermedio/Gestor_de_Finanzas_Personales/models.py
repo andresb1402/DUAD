@@ -77,7 +77,14 @@ class FinanceManager:
         if key in self.list_of_categories:
             raise ValueError(f"Category '{self.list_of_categories[key]}' already exists.")
         self.list_of_categories[key] = new_category
+        return new_category
 
+
+    def get_category(self, name):
+        clean_name = name.strip().lower()
+        if clean_name in self.list_of_categories:
+            return self.list_of_categories[clean_name]
+        return None
 
     def add_transaction(self, transaction):
         if not self.list_of_categories:
