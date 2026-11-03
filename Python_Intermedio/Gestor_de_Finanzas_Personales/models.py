@@ -12,6 +12,9 @@ class Category:
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return f"{self.name}, Color: {self.color}"
+
     def to_dict(self):
         return {
             "name": self.name,
@@ -69,7 +72,11 @@ class FinanceManager:
 
 
     def add_category(self, name):
-        self.list_of_categories[Category] = name
+        new_category = Category(name)
+        key = new_category.name.lower()
+        if key in self.list_of_categories:
+            raise ValueError(f"Category '{self.list_of_categories[key]}' already exists.")
+        self.list_of_categories[key] = new_category
 
 
     def add_transaction(self, transaction):
