@@ -30,6 +30,8 @@ payment_methods = [
     "SINPE",
 ]
 
+corrupted_transactions = []
+
 # Add categories
 for cat in categories_list:
     manager.add_category(cat)
@@ -40,16 +42,33 @@ if isinstance(raw_data, list):
     for item in raw_data:
         try:
             t = Transaction(
-                trans_type=item.get("trans_type"),
-                category=item.get("category"),
-                title=item.get("title"),
-                amount=item.get("amount"),
-                payment_method=item.get("payment_method"),
                 date=item.get("date"),
+                title=item.get("title"),
+                category=item.get("category"),
+                transaction_type=item.get("transaction_type"),
+                amount=item.get("amount"),
+                payment_method=item.get("payment_method")                
             )
-            manager.add_transaction(t)
+            manager.add_transaction(t)           
+
         except Exception as e:
-            print(f"Error loading transaction: {e}")
+            corrupted = {}
+            date = item.get("date", "Missing date")
+            title = item.get("title", "Missing title")
+            corrupted["transaction"] = date, title
+            corrupted["error"] = str(e)
+            corrupted_transactions.append(corrupted)
+
+if corrupted_transactions:
+    error_log = []
+    for index, invalid_trans in enumerate(corrupted_transactions, start=1):
+        transaction = invalid_trans.get("transaction")
+        error = invalid_trans.get("error")
+        date, title = transaction
+        error_log.append(f"-Transaction #{index} \nDate: {date} \nTitle: {title} \nError: {error}\n")
+    sg.popup_scrolled(f"Error loading transaction(s): \n{'\n'.join(error_log)}")
+
+
 
 
 def get_table_data(transactions=None):
@@ -58,7 +77,7 @@ def get_table_data(transactions=None):
     return [
         [
             t.date,
-            t.trans_type,
+            t.transaction_type,
             t.category,
             t.title,
             f"₡{t.amount:,.2f}",
@@ -89,6 +108,7 @@ def open_transactions_window():
                 key="-CATEGORY-",
                 readonly=True,
             ),
+            sg.Button("Manage Categories")
         ],
         [sg.Text("Title:"), sg.InputText(key="-TITLE-")],
         [sg.Text("Amount (₡):"), sg.InputText(key="-AMOUNT-")],
@@ -186,7 +206,7 @@ def open_transactions_window():
                 for t in filtered
                 if q in t.title.lower()
                 or q in t.category.lower()
-                or q in t.trans_type.lower()
+                or q in t.transaction_type.lower()
                 or q in f"{t.amount:.2f}"
                 or q in str(t.amount)
             ]
@@ -231,6 +251,10 @@ def open_transactions_window():
         if event in (sg.WINDOW_CLOSED, "Back"):
             break
 
+        # Manage categories
+        if event == "Manage Categories":
+            open_categories_window()
+            
         # Real-time search
         if event == "-SEARCH-":
             current_visible_transactions = refresh_table(
@@ -292,11 +316,11 @@ def open_transactions_window():
                 editing_transaction.payment_method
             )
 
-            if editing_transaction.trans_type == "Income":
+            if editing_transaction.transaction_type == "Income":
                 trans_window["-INCOME-"].update(True)
-            elif editing_transaction.trans_type == "Expense":
+            elif editing_transaction.transaction_type == "Expense":
                 trans_window["-EXPENSE-"].update(True)
-            elif editing_transaction.trans_type == "CC Payment":
+            elif editing_transaction.transaction_type == "CC Payment":
                 trans_window["-CC-PAYMENT-"].update(True)
             else:
                 trans_window["-CC-PARTIAL-"].update(True)
@@ -337,13 +361,13 @@ def open_transactions_window():
         # Save/Update
         if event == "-SAVE-":
             if values["-INCOME-"]:
-                trans_type = "Income"
+                transaction_type = "Income"
             elif values["-EXPENSE-"]:
-                trans_type = "Expense"
+                transaction_type = "Expense"
             elif values["-CC-PAYMENT-"]:
-                trans_type = "CC Payment"
+                transaction_type = "CC Payment"
             else:
-                trans_type = "CC Partial Payment"
+                transaction_type = "CC Partial Payment"
 
             title = values["-TITLE-"].strip()
             category = values["-CATEGORY-"]
@@ -366,12 +390,12 @@ def open_transactions_window():
             try:
                 if editing_transaction is None:
                     new_trans = Transaction(
-                        trans_type, category, title, amount, payment_method, date_str
+                            date_str, title, category, transaction_type, amount, payment_method, 
                     )
                     manager.add_transaction(new_trans)
                 else:
                     editing_transaction.set_date(date_str)
-                    editing_transaction.trans_type = trans_type
+                    editing_transaction.transaction_type = transaction_type
                     editing_transaction.category = category
                     editing_transaction.title = title
                     editing_transaction.amount = amount
@@ -405,6 +429,123 @@ def open_transactions_window():
 
     trans_window.close()
 
+def open_categories_window():
+    current_categories = categories_list
+
+    layout_categories = [
+            [sg.Text("Manage Categories", font=("Helvetica", 16, "bold"))],
+            [
+            sg.Text("Category Name:"),
+            sg.InputText(key="-CAT-NAME-", size=(20, 1)),
+            sg.Button("Add", key="-BTN-ADD-"),
+            ],
+            [sg.HorizontalSeparator()],
+            # show categories
+            [
+                sg.Combo(
+                    categories_list,
+                    default_value=categories_list[0],
+                    key="-CATEGORY-",
+                    readonly=True,
+                ),
+                sg.Button("Edit", key="-BTN-EDIT-"),
+                sg.Button("Remove", key="-BTN-REMOVE-")
+            ],
+            [sg.Button("Back", key="-BTN-BACK-")]
+        ]
+    
+    categories_window = sg.Window("Manage Categories", layout_categories, modal=True)
+
+    while True:
+        event, values = categories_window.read()
+
+        if event in (sg.WINDOW_CLOSED, "-BTN-BACK-"):
+            break
+
+        # 1. ADD CATEGORY
+        if event == "-BTN-ADD-":
+            new_cat = values["-CAT-NAME-"].strip()
+            
+            if not new_cat:
+                sg.popup_error("Please enter a category name.")
+                continue
+
+            if new_cat in current_categories:
+                sg.popup_error("Category already exists.")
+                continue
+
+        # Update list and combo
+            current_categories.append(new_cat)
+            manager.add_category(new_cat)  # Synchronize with manager
+            
+            categories_window["-CATEGORY-"].update(
+                values=current_categories, value=new_cat
+            )
+            categories_window["-CAT-NAME-"].update("")
+            sg.popup("Success", f"Category '{new_cat}' added successfully!")
+
+        # 2. EDIT CATEGORY
+        if event == "-BTN-EDIT-":
+            selected_cat = values["-CATEGORY-"]
+            new_name = values["-CAT-NAME-"].strip()
+
+            if not selected_cat:
+                sg.popup_error("Please select a category to edit.")
+                continue
+
+            if not new_name:
+                sg.popup_error("Please type the new category name in the input box.")
+                continue
+
+            if new_name in current_categories:
+                sg.popup_error("A category with this name already exists.")
+                continue
+
+            # Update name in list
+            idx = current_categories.index(selected_cat)
+            current_categories[idx] = new_name
+            
+            # Optional: Update in manager if method exists
+            if hasattr(manager, "edit_category"):
+                manager.edit_category(selected_cat, new_name)
+
+            categories_window["-CATEGORY-"].update(
+                values=current_categories, value=new_name
+            )
+            categories_window["-CAT-NAME-"].update("")
+            sg.popup("Success", f"Category updated to '{new_name}'.")
+
+        # 3. REMOVE CATEGORY
+        if event == "-BTN-REMOVE-":
+            selected_cat = values["-CATEGORY-"]
+
+            if not selected_cat:
+                sg.popup_error("Please select a category to remove.")
+                continue
+
+            if len(current_categories) <= 1:
+                sg.popup_error("At least one category must remain.")
+                continue
+
+            confirm = sg.popup_yes_no(
+                f"Are you sure you want to remove '{selected_cat}'?",
+                title="Confirm Removal",
+            )
+            
+            if confirm == "Yes":
+                current_categories.remove(selected_cat)
+                
+                # Optional: Remove in manager if method exists
+                if hasattr(manager, "remove_category"):
+                    manager.remove_category(selected_cat)
+
+                new_default = current_categories[0]
+                categories_window["-CATEGORY-"].update(
+                    values=current_categories, value=new_default
+                )
+                sg.popup("Success", f"Category '{selected_cat}' removed.")
+                
+    categories_window.close()
 
 def open_metrics_window():
     current_metrics_data = []

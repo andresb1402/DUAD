@@ -1,16 +1,36 @@
 from data import *
 from datetime import datetime
 
+class Category:
+    def __init__(self, name: str, color: str = "#FFFFFF"):
+        if not name or not name.strip():
+            raise ValueError("Category name cannot be empty.")
 
+        self.name = name.strip()
+        self.color = color
+
+    def __str__(self):
+        return self.name
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "color": self.color
+        }
+    
 class Transaction:
-    def __init__(self, trans_type, category, title, amount, payment_method, date):
-        self.trans_type = trans_type
-        self.category = category
+    def __init__(self, date: str, title, category: Category, transaction_type: str, amount: float, payment_method):
+        self.set_date(date) 
         self.title = title
-        self.amount = float(amount)
+        self.category = category
+        self.transaction_type = transaction_type
+        self.amount = amount
         self.payment_method = payment_method
-        self.set_date(date)  
+        
 
+    def __str__(self):
+            return self.name
+    
     def set_date(self, date_str: str):
         if not date_str or not date_str.strip():
             raise ValueError("Date cannot be empty.")
@@ -18,7 +38,7 @@ class Transaction:
         try:
             dat_obj = datetime.strptime(date_str.strip(), "%d/%m/%Y")
         except ValueError:
-            raise ValueError("Invalid format. Use dd/mm/yyyy.")
+            raise ValueError("Invalid date format. Please use DD/MM/YYYY.")
 
         if dat_obj.date() > datetime.now().date():
             raise ValueError("Future dates are not allowed.")
@@ -29,13 +49,17 @@ class Transaction:
 
     def to_dict(self):
         return {
-            "trans_type": self.trans_type,
+            "date": self.date,
             "title": self.title,
             "category": self.category,
+            "transaction_type": self.transaction_type,
             "amount": self.amount,
-            "payment_method": self.payment_method,
-            "date": self.date
+            "payment_method": self.payment_method
         }
+
+    def __repr__(self):
+        # Defines the transactions inside a list.
+        return f"Transaction({self.date}, {self.title}, {self.category}, {self.transaction_type}, ₡{self.amount:,.2f}, {self.payment_method})"
 
 
 class FinanceManager:
@@ -45,7 +69,7 @@ class FinanceManager:
 
 
     def add_category(self, name):
-        self.list_of_categories[name] = name
+        self.list_of_categories[Category] = name
 
 
     def add_transaction(self, transaction):
@@ -59,7 +83,7 @@ class FinanceManager:
 
 
     def get_income_db(self):
-        return [t for t in self.list_of_transactions if t.trans_type.lower() == "income"]
+        return [t for t in self.list_of_transactions if t.transaction_type.lower() == "income"]
 
 
     def get_total_balance(self):
@@ -67,14 +91,14 @@ class FinanceManager:
             return 0.0
         
         total_income = sum(t.amount for t in self.get_income_db())
-        total_expense = sum(t.amount for t in self.list_of_transactions if t.trans_type.lower() != "income")
+        total_expense = sum(t.amount for t in self.list_of_transactions if t.transaction_type.lower() != "income")
         return total_income - total_expense
 
 
     def get_savings_db(self):
         return [
             t for t in self.list_of_transactions 
-            if t.trans_type.lower() == "expense" and t.category.lower() == "savings"
+            if t.transaction_type.lower() == "expense" and t.category.lower() == "savings"
         ]
 
 
@@ -85,14 +109,14 @@ class FinanceManager:
     def get_expenses_db(self):
         return [
             t for t in self.list_of_transactions 
-            if t.trans_type.lower() == "expense" and t.category.lower() != "savings"
+            if t.transaction_type.lower() == "expense" and t.category.lower() != "savings"
         ]
 
 
     def get_cc_db(self):
         return [
             t for t in self.list_of_transactions 
-            if t.trans_type.lower() in ["cc payment", "cc partial payment"] 
+            if t.transaction_type.lower() in ["cc payment", "cc partial payment"] 
             or t.payment_method.lower() == "credit card"
         ]
 
@@ -100,11 +124,11 @@ class FinanceManager:
     def get_credit_card_summary(self):
         cc_expenses = sum(
             t.amount for t in self.list_of_transactions 
-            if t.payment_method.lower() == "credit card" and t.trans_type.lower() == "expense"
+            if t.payment_method.lower() == "credit card" and t.transaction_type.lower() == "expense"
         )
         cc_payments = sum(
             t.amount for t in self.list_of_transactions 
-            if t.trans_type.lower() in ["cc partial payment", "cc payment"] or t.category.lower() == "credit card"
+            if t.transaction_type.lower() in ["cc partial payment", "cc payment"] or t.category.lower() == "credit card"
         )
         
         return {
@@ -117,8 +141,8 @@ class FinanceManager:
     def get_monthly_summary(self, month, year):
         trans_month = [t for t in self.list_of_transactions if t.month == month and t.year == year]
         
-        income = sum(t.amount for t in trans_month if t.trans_type.lower() == "income")
-        expense = sum(t.amount for t in trans_month if t.trans_type.lower() == "expense" and t.category.lower() != "savings")
+        income = sum(t.amount for t in trans_month if t.transaction_type.lower() == "income")
+        expense = sum(t.amount for t in trans_month if t.transaction_type.lower() == "expense" and t.category.lower() != "savings")
         savings = sum(t.amount for t in trans_month if t.category.lower() == "savings")
         
         return {
@@ -153,10 +177,10 @@ class FinanceManager:
     def get_summary_metrics(self, date_from_str="", date_to_str=""):
         transactions = self._filter_by_date(date_from_str, date_to_str)
         
-        income = sum(t.amount for t in transactions if t.trans_type.lower() == "income")
-        expenses = sum(t.amount for t in transactions if t.trans_type.lower() == "expense" and t.category.lower() != "savings")
+        income = sum(t.amount for t in transactions if t.transaction_type.lower() == "income")
+        expenses = sum(t.amount for t in transactions if t.transaction_type.lower() == "expense" and t.category.lower() != "savings")
         savings = sum(t.amount for t in transactions if t.category.lower() == "savings")
-        cc_payments = sum(t.amount for t in transactions if t.trans_type.lower() in ["cc payment", "cc partial payment"])
+        cc_payments = sum(t.amount for t in transactions if t.transaction_type.lower() in ["cc payment", "cc partial payment"])
 
         return [
             ["Total Income", f"₡{income:,.2f}"],
@@ -171,7 +195,7 @@ class FinanceManager:
         transactions = self._filter_by_date(date_from_str, date_to_str)
         totals = {}
         for t in transactions:
-            if t.trans_type.lower() == "expense" and t.category.lower() != "savings":
+            if t.transaction_type.lower() == "expense" and t.category.lower() != "savings":
                 totals[t.category] = totals.get(t.category, 0.0) + t.amount
         
         results = [[cat, f"₡{amt:,.2f}"] for cat, amt in sorted(totals.items(), key=lambda x: x[1], reverse=True)]
@@ -186,7 +210,7 @@ class FinanceManager:
         transactions = self._filter_by_date(date_from_str, date_to_str)
         totals = {}
         for t in transactions:
-            if t.trans_type.lower() == "income":
+            if t.transaction_type.lower() == "income":
                 totals[t.category] = totals.get(t.category, 0.0) + t.amount
         
         results = [[cat, f"₡{amt:,.2f}"] for cat, amt in sorted(totals.items(), key=lambda x: x[1], reverse=True)]

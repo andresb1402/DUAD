@@ -1,4 +1,5 @@
 import pytest
+import re
 from datetime import datetime
 from models import Transaction, FinanceManager
 
@@ -17,11 +18,11 @@ def populated_manager(empty_manager):
     fm = empty_manager
     
     # Test transactions
-    t1 = Transaction("Income", "Salary", "Salario Enero", 1000000, "Transfer", "15/01/2026")
-    t2 = Transaction("Expense", "Food", "Supermercado", 150000, "Credit Card", "20/01/2026")
-    t3 = Transaction("Expense", "Savings", "Ahorro Quincenal", 100000, "Transfer", "25/01/2026")
-    t4 = Transaction("Expense", "Services", "Luz y Agua", 45000, "SINPE", "05/02/2026")
-    t5 = Transaction("CC Payment", "General", "Pago Tarjeta", 50000, "Transfer", "10/02/2026")
+    t1 = Transaction("15/01/2026", "Salario Enero", "Salary", "Income", 1000000, "Transfer")
+    t2 = Transaction("20/01/2026", "Supermercado", "Food", "Expense", 150000, "Credit Card")
+    t3 = Transaction("25/01/2026", "Ahorro Quincenal", "Savings", "Expense", 100000, "Transfer")
+    t4 = Transaction("05/02/2026", "Luz y Agua", "Services", "Expense", 45000, "SINPE")
+    t5 = Transaction("10/02/2026", "Pago Tarjeta", "General", "CC Payment", 50000, "Transfer")
     
     fm.add_transaction(t1)
     fm.add_transaction(t2)
@@ -35,33 +36,31 @@ def populated_manager(empty_manager):
 # Transactions tests
 
 def test_transaction_initialization():
-    t = Transaction("Expense", "Food", "Almuerzo", 5000.0, "Cash", "12/03/2026")
-    assert t.trans_type == "Expense"
+    t = Transaction("12/03/2026", "Almuerzo", "Food", "Expense", 5000.0, "Cash")
+    assert t.transaction_type == "Expense"
     assert t.amount == 5000.0
     assert t.month == 3
     assert t.year == 2026
 
 def test_transaction_set_date_updates_month_and_year():
-    t = Transaction("Expense", "Food", "Almuerzo", 5000.0, "Cash", "12/03/2026")
+    t = Transaction("12/03/2026", "Almuerzo", "Food", "Expense", 5000.0, "Cash")
     t.set_date("01/11/2025")
     
     assert t.date == "01/11/2025"
     assert t.month == 11
     assert t.year == 2025
 
-def test_transaction_invalid_date_fallback():
-    t = Transaction("Expense", "Food", "Almuerzo", 5000.0, "Cash", "invalid date")
-    now = datetime.now()
-    assert t.month == now.month
-    assert t.year == now.year
-
+def test_creating_a_transaction_fails_with_an_invalid_date():
+    with pytest.raises(ValueError,  match=re.escape("Invalid date format. Please use DD/MM/YYYY.")):
+        Transaction("invalid date", "Almuerzo", "Food", "Expense", 5000.0, "Cash")
 
 # Finance Manager tests
 
 def test_add_transaction_without_categories():
 
     fm = FinanceManager()
-    t = Transaction("Income", "Salary", "Pago", 1000, "Cash", "01/01/2026")
+    t = Transaction("01/01/2026", "Pago", "Salary", "Income", 1000, "Cash")
+    
     with pytest.raises(ValueError, match="No categories available."):
         fm.add_transaction(t)
 

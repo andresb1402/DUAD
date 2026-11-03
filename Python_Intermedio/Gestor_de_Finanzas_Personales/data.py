@@ -10,6 +10,6 @@ def json_file_reader(input_file):
         return {}
     
 
-def save_to_file(input_file, clients_list):
-    with open(input_file, 'w') as file:
-        json.dump(clients_list, file, indent=4)
+def save_to_file(input_file, transactions_list):
+    with open(input_file, 'w', encoding='utf-8') as file:
+        json.dump(transactions_list, file, indent=4)
