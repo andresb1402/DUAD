@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+transactions.json
+try_it.py
