@@ -18,8 +18,8 @@ categories_list = [
     "Weekly House Expenses",
     "Gas",
     "Services",
-    "CC Payment",
-    "CC Partial Payment",
+    "Card Payment",
+    "Card Partial Payment",
     "Others",
 ]
 
@@ -97,8 +97,8 @@ def open_transactions_window():
             sg.Text("Type:"),
             sg.Radio("Income", "TYPE", key="-INCOME-", default=True),
             sg.Radio("Expense", "TYPE", key="-EXPENSE-"),
-            sg.Radio("CC Payment", "TYPE", key="-CC-PAYMENT-"),
-            sg.Radio("CC Partial Payment", "TYPE", key="-CC-PARTIAL-"),
+            sg.Radio("Card Payment", "TYPE", key="-CC-PAYMENT-"),
+            sg.Radio("Card Partial Payment", "TYPE", key="-CC-PARTIAL-"),
         ],
         [
             sg.Text("Category:"),
@@ -320,7 +320,7 @@ def open_transactions_window():
                 trans_window["-INCOME-"].update(True)
             elif editing_transaction.transaction_type == "Expense":
                 trans_window["-EXPENSE-"].update(True)
-            elif editing_transaction.transaction_type == "CC Payment":
+            elif editing_transaction.transaction_type == "Card Payment":
                 trans_window["-CC-PAYMENT-"].update(True)
             else:
                 trans_window["-CC-PARTIAL-"].update(True)
@@ -365,9 +365,9 @@ def open_transactions_window():
             elif values["-EXPENSE-"]:
                 transaction_type = "Expense"
             elif values["-CC-PAYMENT-"]:
-                transaction_type = "CC Payment"
+                transaction_type = "Card Payment"
             else:
-                transaction_type = "CC Partial Payment"
+                transaction_type = "Card Partial Payment"
 
             title = values["-TITLE-"].strip()
             category = values["-CATEGORY-"]
@@ -464,7 +464,7 @@ def open_categories_window():
 
         # 1. ADD CATEGORY
         if event == "-BTN-ADD-":
-            new_cat = values["-CAT-NAME-"].strip()
+            new_cat = values["-CAT-NAME-"].strip().title()
             
             if not new_cat:
                 sg.popup_error("Please enter a category name.")

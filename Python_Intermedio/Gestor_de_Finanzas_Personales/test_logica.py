@@ -22,7 +22,7 @@ def populated_manager(empty_manager):
     t2 = Transaction("20/01/2026", "Supermercado", "Food", "Expense", 150000, "Credit Card")
     t3 = Transaction("25/01/2026", "Ahorro Quincenal", "Savings", "Expense", 100000, "Transfer")
     t4 = Transaction("05/02/2026", "Luz y Agua", "Services", "Expense", 45000, "SINPE")
-    t5 = Transaction("10/02/2026", "Pago Tarjeta", "General", "CC Payment", 50000, "Transfer")
+    t5 = Transaction("10/02/2026", "Pago Tarjeta", "General", "Card Payment", 50000, "Transfer")
     
     fm.add_transaction(t1)
     fm.add_transaction(t2)
@@ -80,7 +80,7 @@ def test_get_summary_metrics_without_filter(populated_manager):
     assert metrics_dict["Total Income"] == "₡1,000,000.00"
     assert metrics_dict["Total Expenses"] == "₡195,000.00"  # 150,000 (Food) + 45,000 (Services)
     assert metrics_dict["Savings"] == "₡100,000.00"
-    assert metrics_dict["CC Payments"] == "₡50,000.00"
+    assert metrics_dict["Card Payments"] == "₡50,000.00"
     assert metrics_dict["Net Balance"] == "₡705,000.00"  # 1,000,000 - 195,000 - 100,000
 
 def test_get_summary_metrics_with_date_filter(populated_manager):

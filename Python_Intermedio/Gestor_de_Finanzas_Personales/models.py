@@ -6,7 +6,7 @@ class Category:
         if not name or not name.strip():
             raise ValueError("Category name cannot be empty.")
 
-        self.name = name.strip()
+        self.name = name.strip().title()
         self.color = color
 
     def __str__(self):
@@ -130,7 +130,7 @@ class FinanceManager:
     def get_cc_db(self):
         return [
             t for t in self.list_of_transactions 
-            if t.transaction_type.lower() in ["cc payment", "cc partial payment"] 
+            if t.transaction_type.lower() in ["card payment", "card partial payment"] 
             or t.payment_method.lower() == "credit card"
         ]
 
@@ -142,7 +142,7 @@ class FinanceManager:
         )
         cc_payments = sum(
             t.amount for t in self.list_of_transactions 
-            if t.transaction_type.lower() in ["cc partial payment", "cc payment"] or t.category.lower() == "credit card"
+            if t.transaction_type.lower() in ["card partial payment", "card payment"] or t.category.lower() == "credit card"
         )
         
         return {
@@ -194,13 +194,13 @@ class FinanceManager:
         income = sum(t.amount for t in transactions if t.transaction_type.lower() == "income")
         expenses = sum(t.amount for t in transactions if t.transaction_type.lower() == "expense" and t.category.lower() != "savings")
         savings = sum(t.amount for t in transactions if t.category.lower() == "savings")
-        cc_payments = sum(t.amount for t in transactions if t.transaction_type.lower() in ["cc payment", "cc partial payment"])
+        cc_payments = sum(t.amount for t in transactions if t.transaction_type.lower() in ["card payment", "card partial payment"])
 
         return [
             ["Total Income", f"₡{income:,.2f}"],
             ["Total Expenses", f"₡{expenses:,.2f}"],
             ["Savings", f"₡{savings:,.2f}"],
-            ["CC Payments", f"₡{cc_payments:,.2f}"],
+            ["Card Payments", f"₡{cc_payments:,.2f}"],
             ["Net Balance", f"₡{(income - expenses - savings):,.2f}"]
         ]
 
