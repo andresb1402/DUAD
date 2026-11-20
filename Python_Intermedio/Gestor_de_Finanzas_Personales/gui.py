@@ -2,7 +2,7 @@ import csv
 from datetime import datetime
 import FreeSimpleGUI as sg
 
-from data import *
+from data import json_file_reader, save_to_file
 from models import FinanceManager, Transaction
 
 DB_FILE = "transactions.json"

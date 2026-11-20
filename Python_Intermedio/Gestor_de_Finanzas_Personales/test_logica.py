@@ -1,5 +1,7 @@
 import pytest
 import re
+import json
+from data import json_file_reader, CorruptedFileError
 from datetime import datetime
 from models import Transaction, FinanceManager
 
@@ -18,9 +20,9 @@ def populated_manager(empty_manager):
     fm = empty_manager
     
     # Test transactions
-    t1 = Transaction("15/01/2026", "Salario Enero", "Salary", "Income", 1000000, "Transfer")
+    t1 = Transaction("01/01/2026", "Salario Enero", "Salary", "Income", 1000000, "Transfer")
     t2 = Transaction("20/01/2026", "Supermercado", "Food", "Expense", 150000, "Credit Card")
-    t3 = Transaction("25/01/2026", "Ahorro Quincenal", "Savings", "Expense", 100000, "Transfer")
+    t3 = Transaction("31/01/2026", "Ahorro Quincenal", "Savings", "Expense", 100000, "Transfer")
     t4 = Transaction("05/02/2026", "Luz y Agua", "Services", "Expense", 45000, "SINPE")
     t5 = Transaction("10/02/2026", "Pago Tarjeta", "General", "Card Payment", 50000, "Transfer")
     
@@ -42,6 +44,47 @@ def test_transaction_initialization():
     assert t.month == 3
     assert t.year == 2026
 
+def test_reading_a_missing_transactions_file_returns_an_empty_list(tmp_path):
+    test_file = tmp_path / "transactions"
+
+    transactions = json_file_reader(test_file)
+
+    assert transactions == []
+
+
+def test_reading_a_corrupted_transactions_file_raises_a_corrupted_file_error(tmp_path):
+    test_file = tmp_path / "transactions"
+
+    test_file.write_text('[{"date": "12/03/2026", "title": "Almu',
+        encoding="utf-8")
+
+    with pytest.raises(CorruptedFileError,  match=re.escape("The transactions file is corrupted.")):
+        json_file_reader(test_file)
+
+
+def test_reading_a_transactions_file_that_is_not_a_list_raises_a_corrupted_file_error(tmp_path):
+    test_file = tmp_path / "transactions"
+    
+    test_file.write_text('{"date": "12/03/2026", "title": "Almuerzo"}',
+        encoding="utf-8")
+
+    with pytest.raises(CorruptedFileError,  match=re.escape("The transactions file is corrupted.")):
+        json_file_reader(test_file)
+
+
+def test_reading_a_valid_transactions_file_returns_its_transactions(tmp_path):
+    test_file = tmp_path / "transactions"
+    expected_transactions = [
+        {"date": "12/03/2026", "title": "Almuerzo"},
+        {"date": "10/05/2026", "title": "Gasolina"},
+    ]
+    test_file.write_text(json.dumps(expected_transactions), encoding="utf-8")
+
+    transactions = json_file_reader(test_file)
+
+    assert transactions == expected_transactions
+    
+
 def test_transaction_set_date_updates_month_and_year():
     t = Transaction("12/03/2026", "Almuerzo", "Food", "Expense", 5000.0, "Cash")
     t.set_date("01/11/2025")
@@ -56,6 +99,79 @@ def test_creating_a_transaction_fails_with_an_invalid_date():
 
 # Finance Manager tests
 
+def test_adding_a_valid_category_returns_the_category():
+    fm = FinanceManager()
+    new_cat = fm.add_category('food')
+
+    assert new_cat.name == 'Food'
+
+
+def test_adding_a_category_fails_with_empty_name():
+    fm = FinanceManager()
+    
+    with pytest.raises(ValueError,  match=re.escape("Category name cannot be empty.")):
+        fm.add_category('')
+
+
+def test_adding_a_category_fails_with_only_spaces():
+    fm = FinanceManager()
+        
+    with pytest.raises(ValueError,  match=re.escape("Category name cannot be empty.")):
+        fm.add_category(' ')
+
+
+def test_adding_a_duplicated_category_with_caps_informs_the_category_already_exists():
+    fm = FinanceManager()
+    fm.add_category('food')
+
+    with pytest.raises(ValueError,  match=re.escape("Category 'Food' already exists.")):
+        fm.add_category("FOOD")
+
+
+def test_adding_a_duplicated_category_with_caps_protects_the_dictionary():
+    fm = FinanceManager()
+    new_cat = fm.add_category('food')
+
+    with pytest.raises(ValueError):
+        fm.add_category("FOOD")
+
+    existing_cat = fm.get_category('Food')
+
+    assert len(fm.list_of_categories) == 1
+    assert existing_cat is new_cat
+
+
+def test_getting_an_existing_category_returns_the_category():
+    fm = FinanceManager()
+    fm.add_category('food')
+    fm.add_category('gas')
+
+    cat_object = fm.get_category("gas")
+
+    assert cat_object is not None
+    assert cat_object.name == 'Gas'
+
+
+def test_getting_an_undefined_category_returns_none():
+    fm = FinanceManager()
+    fm.add_category('food')
+
+    cat_object = fm.get_category("Pizza")
+    
+    assert cat_object is None
+    
+
+def test_getting_a_category_with_caps_and_spaces_returns_the_category():
+    fm = FinanceManager()
+    fm.add_category('food')
+    fm.add_category('gas')
+
+    cat_object = fm.get_category("   GAS  ")
+
+    assert cat_object is not None
+    assert cat_object.name == 'Gas'
+
+
 def test_add_transaction_without_categories():
 
     fm = FinanceManager()
@@ -64,7 +180,7 @@ def test_add_transaction_without_categories():
     with pytest.raises(ValueError, match="No categories available."):
         fm.add_transaction(t)
 
-def test_filter_by_date(populated_manager):
+def test_filter_by_date_(populated_manager):
     # Filter only Jan 2026
     jan_transactions = populated_manager._filter_by_date("01/01/2026", "31/01/2026")
     assert len(jan_transactions) == 3

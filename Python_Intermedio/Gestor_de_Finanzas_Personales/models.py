@@ -1,4 +1,3 @@
-from data import *
 from datetime import datetime
 
 class Category:
@@ -6,6 +5,7 @@ class Category:
         if not name or not name.strip():
             raise ValueError("Category name cannot be empty.")
 
+            
         self.name = name.strip().title()
         self.color = color
 
