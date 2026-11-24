@@ -2,7 +2,7 @@ import csv
 from datetime import datetime
 import FreeSimpleGUI as sg
 
-from data import json_file_reader, save_to_file
+from data import json_file_reader, save_to_file, backup_corrupted_file, CorruptedFileError
 from models import FinanceManager, Transaction
 
 DB_FILE = "transactions.json"
@@ -37,27 +37,54 @@ for cat in categories_list:
     manager.add_category(cat)
 
 # Load existing JSON data
-raw_data = json_file_reader(DB_FILE)
-if isinstance(raw_data, list):
-    for item in raw_data:
+try:
+    raw_data = json_file_reader(DB_FILE)
+except CorruptedFileError:
+    confirm = sg.popup_yes_no(
+                    """The transactions file is damaged and can't be read.
+Save a backup copy of it before starting with an empty list?
+If a backup is not created, the transactions file will be
+replaced the next time a change is made.""",
+                    title="Corrupted file",
+                )
+    if confirm == "Yes":
         try:
-            t = Transaction(
-                date=item.get("date"),
-                title=item.get("title"),
-                category=item.get("category"),
-                transaction_type=item.get("transaction_type"),
-                amount=item.get("amount"),
-                payment_method=item.get("payment_method")                
-            )
-            manager.add_transaction(t)           
+            backup_path = backup_corrupted_file(DB_FILE)
+            sg.popup(f"""Backup saved in:
+{backup_path}
+The app will start with no transactions.""")
+            
+        except OSError as e:
+            sg.popup_error(
+            f"""The backup could not be created.
+Details: {e}
+If you continue, the damaged file will be replaced the next time a change is made, and its data can't be recovered.""")
+            
+    else:
+        sg.popup("""The damaged file was not backed up.
+It will be replaced the next time a change is made and its data can't be recovered.""")
+    raw_data = []
 
-        except Exception as e:
-            corrupted = {}
-            date = item.get("date", "Missing date")
-            title = item.get("title", "Missing title")
-            corrupted["transaction"] = date, title
-            corrupted["error"] = str(e)
-            corrupted_transactions.append(corrupted)
+                        
+for item in raw_data:
+    try:
+        t = Transaction(
+            date=item.get("date"),
+            title=item.get("title"),
+            category=item.get("category"),
+            transaction_type=item.get("transaction_type"),
+            amount=item.get("amount"),
+            payment_method=item.get("payment_method")                
+        )
+        manager.add_transaction(t)           
+
+    except Exception as e:
+        corrupted = {}
+        date = item.get("date", "Missing date")
+        title = item.get("title", "Missing title")
+        corrupted["transaction"] = date, title
+        corrupted["error"] = str(e)
+        corrupted_transactions.append(corrupted)
 
 if corrupted_transactions:
     error_log = []
