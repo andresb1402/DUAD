@@ -2,7 +2,7 @@ import csv
 from datetime import datetime
 import FreeSimpleGUI as sg
 
-from data import json_file_reader, save_to_file, backup_corrupted_file, CorruptedFileError
+from data import json_file_reader, save_to_file, backup_corrupted_file, save_rejected_transactions, CorruptedFileError
 from models import FinanceManager, Transaction
 
 DB_FILE = "transactions.json"
@@ -31,6 +31,7 @@ payment_methods = [
 ]
 
 corrupted_transactions = []
+rejected_transactions = []
 
 # Add categories
 for cat in categories_list:
@@ -65,7 +66,7 @@ If you continue, the damaged file will be replaced the next time a change is mad
 It will be replaced the next time a change is made and its data can't be recovered.""")
     raw_data = []
 
-                        
+
 for item in raw_data:
     try:
         t = Transaction(
@@ -79,23 +80,48 @@ for item in raw_data:
         manager.add_transaction(t)           
 
     except Exception as e:
-        corrupted = {}
-        date = item.get("date", "Missing date")
-        title = item.get("title", "Missing title")
-        corrupted["transaction"] = date, title
-        corrupted["error"] = str(e)
-        corrupted_transactions.append(corrupted)
+        if isinstance(item, dict):
+            date = item.get("date", "Missing date")
+            title = item.get("title", "Missing title")
+            description = f'{date} - {title}'
+            error_text = str(e)
+        else:
+            description = str(item)
+            error_text = "Not a valid transaction."
+            
+        corrupted_transactions.append(f'{description} / Error: {error_text}')
+        rejected_transactions.append(item)
+
 
 if corrupted_transactions:
     error_log = []
     for index, invalid_trans in enumerate(corrupted_transactions, start=1):
-        transaction = invalid_trans.get("transaction")
-        error = invalid_trans.get("error")
-        date, title = transaction
-        error_log.append(f"-Transaction #{index} \nDate: {date} \nTitle: {title} \nError: {error}\n")
-    sg.popup_scrolled(f"Error loading transaction(s): \n{'\n'.join(error_log)}")
+        error_log.append(f"-Transaction #{index} \n{invalid_trans}")
 
+    warning = ""
+    try:
+        rejected = save_rejected_transactions(DB_FILE, rejected_transactions)
 
+    except OSError as e:
+        warning = f"""Unable to save the rejected transactions.
+Details: {e}
+They are still in the transactions file and will be lost the next time a change is made."""
+    else:
+        data_to_save = [t.to_dict() for t in manager.get_transactions()]
+        try:
+            save_to_file(DB_FILE, data_to_save)
+        except OSError as e:
+            warning = f"""The rejected transactions were saved in:
+{rejected}
+The transactions file could not be updated.
+Details: {e}
+They will be detected and saved again the next time the app starts."""
+        else:
+            warning = f"""The rejected transactions were saved in:
+{rejected}
+The transactions file now keeps only the valid ones."""
+
+    sg.popup_scrolled(f"{warning}\n\n{'\n'.join(error_log)}")
 
 
 def get_table_data(transactions=None):
