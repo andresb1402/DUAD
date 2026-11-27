@@ -180,13 +180,13 @@ def test_add_transaction_without_categories():
         fm.add_transaction(t)
 
 
-def test_filter_by_date_(populated_manager):
+def test_filter_by_date(populated_manager):
     # Filter only Jan 2026
-    jan_transactions = populated_manager._filter_by_date("01/01/2026", "31/01/2026")
+    jan_transactions = populated_manager.filter_by_date("01/01/2026", "31/01/2026")
     assert len(jan_transactions) == 3
     
     # Filter only Feb
-    feb_transactions = populated_manager._filter_by_date("01/02/2026", "28/02/2026")
+    feb_transactions = populated_manager.filter_by_date("01/02/2026", "28/02/2026")
     assert len(feb_transactions) == 2
 
 
@@ -194,31 +194,31 @@ def test_filter_by_date_(populated_manager):
 def test_filtering_by_date_with_only_one_date_raises_a_value_error(populated_manager, date_from, date_to):
     
     with pytest.raises(ValueError, match=re.escape("Please enter both dates.")):
-        populated_manager._filter_by_date(date_from, date_to)
+        populated_manager.filter_by_date(date_from, date_to)
 
 
 @pytest.mark.parametrize("date_from, date_to", [("01/01/2026", "hola"), ("hola", "01/01/2026")])
 def test_filtering_by_date_with_an_invalid_date_format_raises_a_value_error(populated_manager, date_from, date_to):
 
     with pytest.raises(ValueError, match=re.escape("Please enter valid dates.")):
-        populated_manager._filter_by_date(date_from, date_to)
+        populated_manager.filter_by_date(date_from, date_to)
 
 
 def test_filtering_by_date_with_the_start_after_the_end_raises_a_value_error(populated_manager):
 
     with pytest.raises(ValueError, match=re.escape("Date from could not be after the date to.")):
-        populated_manager._filter_by_date("01/04/2026", "01/01/2026")
+        populated_manager.filter_by_date("01/04/2026", "01/01/2026")
 
 
 def test_filtering_by_date_with_the_same_start_and_end_returns_that_days_transactions(populated_manager):
-    result = populated_manager._filter_by_date("01/01/2026", "01/01/2026")
+    result = populated_manager.filter_by_date("01/01/2026", "01/01/2026")
     assert len(result) == 1
     assert result[0].title == "Salario Enero"
     
 
 
 def test_filtering_by_date_with_no_matching_transactions_returns_an_empty_list(populated_manager):
-    result = populated_manager._filter_by_date("01/03/2026", "31/03/2026")
+    result = populated_manager.filter_by_date("01/03/2026", "31/03/2026")
     assert result == []
 
 

@@ -168,7 +168,7 @@ class FinanceManager:
 
     # --- Métodos de Métricas para la GUI ---
 
-    def _filter_by_date(self, date_from_str="", date_to_str=""):
+    def filter_by_date(self, date_from_str="", date_to_str=""):
         if not date_from_str and not date_to_str:
             return self.list_of_transactions
         elif not date_from_str or not date_to_str:
@@ -191,7 +191,7 @@ class FinanceManager:
         return filtered
 
     def get_summary_metrics(self, date_from_str="", date_to_str=""):
-        transactions = self._filter_by_date(date_from_str, date_to_str)
+        transactions = self.filter_by_date(date_from_str, date_to_str)
         
         income = sum(t.amount for t in transactions if t.transaction_type.lower() == "income")
         expenses = sum(t.amount for t in transactions if t.transaction_type.lower() == "expense" and t.category.lower() != "savings")
@@ -208,7 +208,7 @@ class FinanceManager:
 
 
     def get_expenses_by_category(self, date_from_str="", date_to_str=""):
-        transactions = self._filter_by_date(date_from_str, date_to_str)
+        transactions = self.filter_by_date(date_from_str, date_to_str)
         totals = {}
         for t in transactions:
             if t.transaction_type.lower() == "expense" and t.category.lower() != "savings":
@@ -223,7 +223,7 @@ class FinanceManager:
 
 
     def get_income_by_category(self, date_from_str="", date_to_str=""):
-        transactions = self._filter_by_date(date_from_str, date_to_str)
+        transactions = self.filter_by_date(date_from_str, date_to_str)
         totals = {}
         for t in transactions:
             if t.transaction_type.lower() == "income":
