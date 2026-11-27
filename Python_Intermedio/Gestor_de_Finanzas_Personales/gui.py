@@ -140,6 +140,17 @@ def get_table_data(transactions=None):
     ]
 
 
+def save_from_manager_to_file():
+    temp_trans_list = [t.to_dict() for t in manager.get_transactions()]
+    try:
+        save_to_file(DB_FILE, temp_trans_list)
+    except OSError as e:
+        sg.popup_error(f"""The last change will not be kept if you close the app.
+Error: {e}""")
+        return False
+    return True
+
+
 def open_transactions_window():
     editing_transaction = None
 
@@ -396,9 +407,7 @@ def open_transactions_window():
             )
             if confirm == "Yes":
                 manager.get_transactions().remove(target_trans)
-                save_to_file(
-                    DB_FILE, [t.to_dict() for t in manager.get_transactions()]
-                )
+                delete_succeeded = save_from_manager_to_file()
 
                 if editing_transaction == target_trans:
                     editing_transaction = None
@@ -409,7 +418,9 @@ def open_transactions_window():
                     date_from_str=values["-DATE-FROM-"].strip(),
                     date_to_str=values["-DATE-TO-"].strip(),
                 )
-                sg.popup("Deleted", "Transaction removed successfully.")
+
+                if delete_succeeded:
+                    sg.popup("Deleted", "Transaction removed successfully.")
 
         # Save/Update
         if event == "-SAVE-":
@@ -463,8 +474,7 @@ def open_transactions_window():
                 continue
 
             # Save to JSON
-            data_to_save = [t.to_dict() for t in manager.get_transactions()]
-            save_to_file(DB_FILE, data_to_save)
+            save_succeeded = save_from_manager_to_file()
 
             # Refresh table with active filters
             current_visible_transactions = refresh_table(
@@ -478,7 +488,8 @@ def open_transactions_window():
             trans_window["-AMOUNT-"].update("")
             trans_window["-DATE-"].update("")
 
-            sg.popup("Success", "Transaction saved successfully!")
+            if save_succeeded:
+                sg.popup("Success", "Transaction saved successfully!")
 
     trans_window.close()
 
