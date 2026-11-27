@@ -169,24 +169,26 @@ class FinanceManager:
     # --- Métodos de Métricas para la GUI ---
 
     def _filter_by_date(self, date_from_str="", date_to_str=""):
-        if not date_from_str or not date_to_str:
+        if not date_from_str and not date_to_str:
             return self.list_of_transactions
+        elif not date_from_str or not date_to_str:
+            raise ValueError('Please enter both dates.') 
         try:
             d_start = datetime.strptime(date_from_str, "%d/%m/%Y")
             d_end = datetime.strptime(date_to_str, "%d/%m/%Y")
             
-            filtered = []
-            for t in self.list_of_transactions:
-                try:
-                    t_date = datetime.strptime(t.date, "%d/%m/%Y")
-                    if d_start <= t_date <= d_end:
-                        filtered.append(t)
-                except ValueError:
-                    continue
-            return filtered
-        except ValueError:
-            return self.list_of_transactions
+        except ValueError as e:
+            raise ValueError('Please enter valid dates.') from e
 
+        if d_start > d_end:
+            raise ValueError('Date from could not be after the date to.')
+        
+        filtered = []
+        for t in self.list_of_transactions:
+            t_date = datetime.strptime(t.date, "%d/%m/%Y")
+            if d_start <= t_date <= d_end:
+                filtered.append(t)
+        return filtered
 
     def get_summary_metrics(self, date_from_str="", date_to_str=""):
         transactions = self._filter_by_date(date_from_str, date_to_str)

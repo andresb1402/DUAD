@@ -173,12 +173,12 @@ def test_getting_a_category_with_caps_and_spaces_returns_the_category():
 
 
 def test_add_transaction_without_categories():
-
     fm = FinanceManager()
     t = Transaction("01/01/2026", "Pago", "Salary", "Income", 1000, "Cash")
     
     with pytest.raises(ValueError, match="No categories available."):
         fm.add_transaction(t)
+
 
 def test_filter_by_date_(populated_manager):
     # Filter only Jan 2026
@@ -188,6 +188,39 @@ def test_filter_by_date_(populated_manager):
     # Filter only Feb
     feb_transactions = populated_manager._filter_by_date("01/02/2026", "28/02/2026")
     assert len(feb_transactions) == 2
+
+
+@pytest.mark.parametrize("date_from, date_to", [("01/01/2026", ""), ("", "01/01/2026")])
+def test_filtering_by_date_with_only_one_date_raises_a_value_error(populated_manager, date_from, date_to):
+    
+    with pytest.raises(ValueError, match=re.escape("Please enter both dates.")):
+        populated_manager._filter_by_date(date_from, date_to)
+
+
+@pytest.mark.parametrize("date_from, date_to", [("01/01/2026", "hola"), ("hola", "01/01/2026")])
+def test_filtering_by_date_with_an_invalid_date_format_raises_a_value_error(populated_manager, date_from, date_to):
+
+    with pytest.raises(ValueError, match=re.escape("Please enter valid dates.")):
+        populated_manager._filter_by_date(date_from, date_to)
+
+
+def test_filtering_by_date_with_the_start_after_the_end_raises_a_value_error(populated_manager):
+
+    with pytest.raises(ValueError, match=re.escape("Date from could not be after the date to.")):
+        populated_manager._filter_by_date("01/04/2026", "01/01/2026")
+
+
+def test_filtering_by_date_with_the_same_start_and_end_returns_that_days_transactions(populated_manager):
+    result = populated_manager._filter_by_date("01/01/2026", "01/01/2026")
+    assert len(result) == 1
+    assert result[0].title == "Salario Enero"
+    
+
+
+def test_filtering_by_date_with_no_matching_transactions_returns_an_empty_list(populated_manager):
+    result = populated_manager._filter_by_date("01/03/2026", "31/03/2026")
+    assert result == []
+
 
 def test_get_summary_metrics_without_filter(populated_manager):
     metrics = populated_manager.get_summary_metrics()
@@ -199,6 +232,7 @@ def test_get_summary_metrics_without_filter(populated_manager):
     assert metrics_dict["Card Payments"] == "₡50,000.00"
     assert metrics_dict["Net Balance"] == "₡705,000.00"  # 1,000,000 - 195,000 - 100,000
 
+
 def test_get_summary_metrics_with_date_filter(populated_manager):
     metrics = populated_manager.get_summary_metrics("01/01/2026", "31/01/2026")
     metrics_dict = dict(metrics)
@@ -207,6 +241,7 @@ def test_get_summary_metrics_with_date_filter(populated_manager):
     assert metrics_dict["Total Expenses"] == "₡150,000.00"
     assert metrics_dict["Savings"] == "₡100,000.00"
     assert metrics_dict["Net Balance"] == "₡750,000.00"
+
 
 def test_get_expenses_by_category(populated_manager):
     expenses = populated_manager.get_expenses_by_category()
@@ -217,6 +252,7 @@ def test_get_expenses_by_category(populated_manager):
     assert "Services" in exp_dict
     assert exp_dict["Services"] == "₡45,000.00"
     assert "Savings" not in exp_dict 
+
 
 def test_get_income_by_category(populated_manager):
     incomes = populated_manager.get_income_by_category()
